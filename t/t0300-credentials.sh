@@ -35,7 +35,17 @@ test_expect_success 'setup helper scripts' '
 	test -z "$pass" || echo password=$pass
 	EOF
 
-	PATH="$PWD:$PATH"
+	write_script git-credential-verbatim-with-expiry <<-\EOF &&
+	user=$1; shift
+	pass=$1; shift
+	pexpiry=$1; shift
+	. ./dump
+	test -z "$user" || echo username=$user
+	test -z "$pass" || echo password=$pass
+	test -z "$pexpiry" || echo password_expiry_utc=$pexpiry
+	EOF
+
+	PATH="$PWD$PATH_SEP$PATH"
 '
 
 test_expect_success 'credential_fill invokes helper' '
